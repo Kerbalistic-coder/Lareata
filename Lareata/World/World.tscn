@@ -1,7 +1,7 @@
 [gd_scene load_steps=5 format=2]
 
 [ext_resource path="res://Textures/TileMaps/DirtStoneAir.png" type="Texture" id=1]
-[ext_resource path="res://Player/DummyPlayer.tscn" type="PackedScene" id=2]
+[ext_resource path="res://Player/Player.tscn" type="PackedScene" id=2]
 [ext_resource path="res://World/Mapgen.tscn" type="PackedScene" id=3]
 
 [sub_resource type="TileSet" id=1]
@@ -64,7 +64,7 @@
 
 [node name="World" type="Node2D"]
 
-[node name="DummyPlayer" parent="." instance=ExtResource( 2 )]
+[node name="Player" parent="." instance=ExtResource( 2 )]
 position = Vector2( 400, 225 )
 
 [node name="Mapgen" parent="." instance=ExtResource( 3 )]
