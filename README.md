@@ -17,9 +17,7 @@ This requires Godot to be installed.
  6. Click "Select Current Folder", and Lareata should be present in your project list.
 
 ## In This Version
-In this version (ALPHA 0.2), we added:
- - Simplex-noise based map generation (By @TheMowgliMan, or @kkidslogin on Scratch)
- - Added more realistic player controller (By @NILL2021, or @ToastersUnited on Scratch)
- - Added a Changelog (@TheMowgliMan) and added installation instructions (@TheMowgliMan)
+In this version (ALPHA 0.3-incomplete), we added:
+ - Ore generator.
 
 For more details see the changelog.
