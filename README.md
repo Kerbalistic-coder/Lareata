@@ -18,6 +18,7 @@ This requires Godot to be installed.
 
 ## In This Version
 In this version (ALPHA 0.3-incomplete), we added:
- - Ore generator.
+ - Ore generator
+ - Main Menu
 
 For more details see the changelog.
