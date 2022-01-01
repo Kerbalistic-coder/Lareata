@@ -1,8 +1,9 @@
-[gd_scene load_steps=5 format=2]
+[gd_scene load_steps=6 format=2]
 
 [ext_resource path="res://Textures/TileMaps/DirtStoneAir.png" type="Texture" id=1]
 [ext_resource path="res://Player/Player.tscn" type="PackedScene" id=2]
 [ext_resource path="res://World/Mapgen.tscn" type="PackedScene" id=3]
+[ext_resource path="res://UI/MainMenu.tscn" type="PackedScene" id=4]
 
 [sub_resource type="TileSet" id=1]
 0/name = "0"
@@ -73,3 +74,8 @@ position = Vector2( 400, 225 )
 tile_set = SubResource( 1 )
 cell_size = Vector2( 16, 16 )
 format = 1
+
+[node name="MainMenu" parent="." instance=ExtResource( 4 )]
+
+[connection signal="mapgen_finished" from="Mapgen" to="Player" method="_on_Mapgen_mapgen_finished"]
+[connection signal="start_game" from="MainMenu" to="Mapgen" method="_on_MainMenu_start_game"]
