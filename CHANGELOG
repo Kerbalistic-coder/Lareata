@@ -11,6 +11,7 @@ BUGFIX: Fixed a bug in a feature.
 ## Changelog
 -----Alpha 0.3 (INCOMPLETE)-----
 ADD: Added an ore generator.
+ADD: Added the main menu.
 
 -----Alpha 0.2-----
 ADD: Added fractal-noise-based map generation.
