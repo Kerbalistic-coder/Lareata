@@ -17,8 +17,8 @@ This requires Godot to be installed.
  6. Click "Select Current Folder", and Lareata should be present in your project list.
 
 ## In This Version
-In this version (ALPHA 0.3-incomplete), we added:
- - Ore generator
- - Main Menu
+In this version (ALPHA 0.3.1), we added:
+ - Nice map lighting
+ - Background panel
 
 For more details see the changelog.
