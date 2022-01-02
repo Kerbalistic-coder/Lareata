@@ -113,7 +113,7 @@ func process_light(upper_left_corner, lower_right_corner):
 
 	if len(light_map) == 0:
 		for i in range(0, map_width * map_height):
-			light_map.append(0)
+			light_map.append(3)
 		set_light_map(x0 + 1, y0 + 1, "light")
 
 	# Lights
@@ -138,10 +138,7 @@ func process_light(upper_left_corner, lower_right_corner):
 				
 				var average
 				
-				if not (get_map(x0 + xrel, y0 + yrel) in transparent_blocks):
-					average = sum_array(buddies) / 9
-				else:
-					average = buddies.min()
+				average = buddies.min()
 				if "light" in buddies:
 					average = 0
 				average = round(average)
@@ -175,6 +172,10 @@ func _on_MainMenu_start_game(world_seed):
 	
 	$ProgressBarContainer.visible = true
 	$ProgressBarContainer/ProgressContainer/VBoxContainer/BarMargin/ProgressBar.max_value = map_width
+	
+	# Create "sun layer"
+	for i in range(0, map_width):
+		light_sources.append([i, 0])
 	
 	yield(get_tree().create_timer(0.1), "timeout")
 	m = mapgen()
