@@ -1,7 +1,13 @@
-[gd_scene load_steps=4 format=2]
+[gd_scene load_steps=6 format=2]
 
 [ext_resource path="res://icon.png" type="Texture" id=1]
 [ext_resource path="res://Player/Player.gd" type="Script" id=2]
+
+[sub_resource type="StyleBoxFlat" id=2]
+bg_color = Color( 0.71, 0.971, 1, 1 )
+
+[sub_resource type="Theme" id=3]
+Panel/styles/panel = SubResource( 2 )
 
 [sub_resource type="RectangleShape2D" id=1]
 extents = Vector2( 30.027, 30.4775 )
@@ -14,6 +20,16 @@ __meta__ = {
 GRAVITY = 1900
 SPEED = 300
 JUMPSPEED = 800
+
+[node name="Panel" type="Panel" parent="."]
+margin_left = -418.0
+margin_top = -242.0
+margin_right = 437.0
+margin_bottom = 256.0
+theme = SubResource( 3 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
 
 [node name="Collisions" type="CollisionShape2D" parent="."]
 shape = SubResource( 1 )
