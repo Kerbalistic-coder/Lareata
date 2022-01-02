@@ -1,12 +1,18 @@
 extends Node2D
 
 var map = []
+var light_map = []
+var light_sources = []
 
 export var map_width = 640
 export var map_height = 640
 export var cave_tolerance = 0.15
+
+export var player_x = 0
+export var player_y = 0
+
 var percentThroughMapgen = 0
-var go = false
+var go = true
 var m
 
 signal mapgen_finished
@@ -29,6 +35,11 @@ export var ore_tolerance = [
 	-0.1,
 	0.3
 ]
+export var transparent_blocks = [
+	blocks.AIR,
+	blocks.NORMAL_TREE_TRUNK,
+	blocks.TREE_LEAVES
+]
 
 
 var noiseLand = OpenSimplexNoise.new()
@@ -40,6 +51,12 @@ func set_map(x, y, item):
 	
 func get_map(x, y):
 	return map[(x * map_height) + y]
+	
+func set_light_map(x, y, item):
+	light_map[(x * map_height) + y] = item
+	
+func get_light_map(x, y):
+	return light_map[(x * map_height) + y]
 	
 func place_ore(x, y):
 	for ore in range(0, len(ores)):
@@ -65,10 +82,6 @@ func mapgen():
 		
 		if x % 5 == 4:
 			yield()
-			#$ProgressBarContainer/ProgressContainer/VBoxContainer/BarMargin/ProgressBar.value = percentThroughMapgen
-#			VisualServer.force_draw()
-			#get_tree().get_root().update_worlds()
-			#propagate_notification(NOTIFICATION_DRAW)
 		
 		for y in range(map_height):
 			var cave_value = noiseLand.get_noise_2d(x, y)
@@ -86,17 +99,69 @@ func mapgen():
 				set_map(x, y, blocks.AIR)
 	go = false
 				
-#func _process(delta):
-#	$ProgressBarContainer/ProgressContainer/VBoxContainer/BarMargin/ProgressBar.value = percentThroughMapgen
-#	get_tree().get_root().update_worlds()
-#	if go == true:
-#		m.resume()
-#	print(percentThroughMapgen)
+func _process(delta):
+	print(player_x)
+	if go == false:
+		process_light($LightMap.world_to_map(Vector2(player_x - 512, player_y - 256)), $LightMap.world_to_map(Vector2(player_x + 512, player_y + 256)))
+
+func process_light(upper_left_corner, lower_right_corner):
+	# Init Stuff
+	var x0 = upper_left_corner.x
+	var y0 = upper_left_corner.y
+	var x1 = lower_right_corner.x
+	var y1 = lower_right_corner.y
+
+	if len(light_map) == 0:
+		for i in range(0, map_width * map_height):
+			light_map.append(0)
+		set_light_map(x0 + 1, y0 + 1, "light")
+
+	# Lights
+	for light in light_sources:
+		if light[0] > x0 and light[0] < x1:
+			if light[1] > y0 and light[1] < y1:
+				set_light_map(light[0], light[1], "light")
+
+	# Lighting
+	for xrel in range(0, x1 - x0):
+		for yrel in range(0, y1 - y0):
+			if str(get_light_map(x0 + xrel, y0 + yrel)) != "light":
+				var buddies = [3,3,3,3,3,3,3,3]
+				buddies[0] = get_light_map(x0 + xrel - 1, y0 + yrel - 1)
+				buddies[1] = get_light_map(x0 + xrel - 1, y0 + yrel)
+				buddies[2] = get_light_map(x0 + xrel - 1, y0 + yrel + 1)
+				buddies[3] = get_light_map(x0 + xrel, y0 + yrel - 1)
+				buddies[4] = get_light_map(x0 + xrel, y0 + yrel + 1)
+				buddies[5] = get_light_map(x0 + xrel + 1, y0 + yrel - 1)
+				buddies[6] = get_light_map(x0 + xrel + 1, y0 + yrel)
+				buddies[7] = get_light_map(x0 + xrel + 1, y0 + yrel -+1)
+				
+				var average
+				
+				if not (get_map(x0 + xrel, y0 + yrel) in transparent_blocks):
+					average = sum_array(buddies) / 9
+				else:
+					average = buddies.min()
+				if "light" in buddies:
+					average = 0
+				average = round(average)
+				var buddies_has_transparent = false
+				if (get_map(x0 + xrel - 1, y0 + yrel) in transparent_blocks) or (get_map(x0 + xrel + 1, y0 + yrel) in transparent_blocks) or (get_map(x0 + xrel - 1, y0 + yrel - 1) in transparent_blocks) or (get_map(x0 + xrel, y0 + yrel + 1) in transparent_blocks):
+					buddies_has_transparent = true
+				if (not (get_map(x0 + xrel, y0 + yrel) in transparent_blocks)) and (average < 3) and (not buddies_has_transparent):
+					average = average + 1
+				set_light_map(x0 + xrel, y0 + yrel, average)
+				
+				# Set Light Values
+				# if average != get_light_map(x0 + xrel, y0 + yrel):
+				$LightMap.set_cell(x0 + xrel, y0 + yrel, average)
 
 func _ready():
 	$ProgressBarContainer.visible = false
 
 func _on_MainMenu_start_game(world_seed):
+	print(int("light"))
+	
 	# Configure
 	noiseLand.seed = world_seed
 	noiseLand.octaves = 2
@@ -127,3 +192,9 @@ func _on_MainMenu_start_game(world_seed):
 			
 	$ProgressBarContainer.visible = false
 	emit_signal("mapgen_finished")
+
+static func sum_array(array):
+	var sum = 0.0
+	for element in array:
+		 sum += int(element)
+	return sum
