@@ -1,12 +1,13 @@
 extends Node2D
 
 var map = []
+var background_map = []
 var light_map = []
 var light_sources = []
 
 export var map_width = 640
 export var map_height = 640
-export var cave_tolerance = 0.15
+export var cave_tolerance = 0
 
 export var player_x = 0
 export var player_y = 0
@@ -52,6 +53,12 @@ func set_map(x, y, item):
 func get_map(x, y):
 	return map[(x * map_height) + y]
 	
+func set_background_map(x, y, item):
+	background_map[(x * map_height) + y] = item
+	
+func get_background_map(x, y):
+	return background_map[(x * map_height) + y]
+	
 func set_light_map(x, y, item):
 	light_map[(x * map_height) + y] = item
 	
@@ -69,6 +76,7 @@ func place_ore(x, y):
 func mapgen():
 	for i in range(map_width * map_height):
 		map.append(null)
+		background_map.append(null)
 		
 	var land_point = 30
 	
@@ -89,18 +97,29 @@ func mapgen():
 			if cave_value < cave_tolerance:
 				if y < round(land_point):
 					set_map(x, y, blocks.AIR)
+					set_background_map(x, y, blocks.AIR)
 				elif y == round(land_point):
 					set_map(x, y, blocks.GRASS)
+					set_background_map(x, y, blocks.GRASS)
 				elif y < round(land_point) + (15 + noiseLand.get_noise_1d(x) * 4):
 					set_map(x, y, blocks.DIRT)
+					set_background_map(x, y, blocks.DIRT)
 				else:
 					place_ore(x, y)
+					set_background_map(x, y, blocks.STONE)
 			else:
 				set_map(x, y, blocks.AIR)
+				if y < round(land_point):
+					set_background_map(x, y, blocks.AIR)
+				elif y == round(land_point):
+					set_background_map(x, y, blocks.GRASS)
+				elif y < round(land_point) + (15 + noiseLand.get_noise_1d(x) * 4):
+					set_background_map(x, y, blocks.DIRT)
+				else:
+					set_background_map(x, y, blocks.STONE)
 	go = false
 				
 func _process(delta):
-	print(player_x)
 	if go == false:
 		process_light($LightMap.world_to_map(Vector2(player_x - 512, player_y - 256)), $LightMap.world_to_map(Vector2(player_x + 512, player_y + 256)))
 
@@ -134,24 +153,26 @@ func process_light(upper_left_corner, lower_right_corner):
 				buddies[4] = get_light_map(x0 + xrel, y0 + yrel + 1)
 				buddies[5] = get_light_map(x0 + xrel + 1, y0 + yrel - 1)
 				buddies[6] = get_light_map(x0 + xrel + 1, y0 + yrel)
-				buddies[7] = get_light_map(x0 + xrel + 1, y0 + yrel -+1)
+				buddies[7] = get_light_map(x0 + xrel + 1, y0 + yrel +1)
 				
 				var average
 				
 				average = buddies.min()
 				if "light" in buddies:
 					average = 0
-				average = round(average)
+				average = average
 				var buddies_has_transparent = false
 				if (get_map(x0 + xrel - 1, y0 + yrel) in transparent_blocks) or (get_map(x0 + xrel + 1, y0 + yrel) in transparent_blocks) or (get_map(x0 + xrel - 1, y0 + yrel - 1) in transparent_blocks) or (get_map(x0 + xrel, y0 + yrel + 1) in transparent_blocks):
 					buddies_has_transparent = true
 				if (not (get_map(x0 + xrel, y0 + yrel) in transparent_blocks)) and (average < 3) and (not buddies_has_transparent):
 					average = average + 1
+#				elif (not (get_background_map(x0 + xrel, y0 + yrel) in transparent_blocks)) and (average < 3) and (get_map(x0 + xrel, y0 + yrel) in transparent_blocks):
+#					average = average + 0.5
 				set_light_map(x0 + xrel, y0 + yrel, average)
 				
 				# Set Light Values
 				# if average != get_light_map(x0 + xrel, y0 + yrel):
-				$LightMap.set_cell(x0 + xrel, y0 + yrel, average)
+				$LightMap.set_cell(x0 + xrel, y0 + yrel, round(average))
 
 func _ready():
 	$ProgressBarContainer.visible = false
@@ -162,12 +183,12 @@ func _on_MainMenu_start_game(world_seed):
 	# Configure
 	noiseLand.seed = world_seed
 	noiseLand.octaves = 2
-	noiseLand.period = 20.0
+	noiseLand.period = 10.0
 	noiseLand.persistence = 0.8
 	
 	noiseOre.seed = (noiseLand.get_noise_1d(2021) + 1) * 2000000000
 	noiseOre.octaves = 3
-	noiseOre.period = 7.0
+	noiseOre.period = 3.5
 	noiseOre.persistence = 0.8
 	
 	$ProgressBarContainer.visible = true
@@ -190,6 +211,7 @@ func _on_MainMenu_start_game(world_seed):
 	for x in range(map_width):
 		for y in range(map_height):
 			$Map.set_cell(x, y, get_map(x, y))
+			$BackgroundMap.set_cell(x, y, get_background_map(x, y))
 			
 	$ProgressBarContainer.visible = false
 	emit_signal("mapgen_finished")
@@ -199,3 +221,8 @@ static func sum_array(array):
 	for element in array:
 		 sum += int(element)
 	return sum
+
+
+func _on_Player_mine(mousepos):
+	var pos = $Map.world_to_map(mousepos)
+	$Map.set_cell(pos.x, pos.y, blocks.AIR)
