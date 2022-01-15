@@ -146,20 +146,24 @@ func process_light(upper_left_corner, lower_right_corner):
 		for yrel in range(0, y1 - y0):
 			if str(get_light_map(x0 + xrel, y0 + yrel)) != "light":
 				var buddies = [3,3,3,3,3,3,3,3]
-				buddies[0] = get_light_map(x0 + xrel - 1, y0 + yrel - 1)
+				var natural_glimmers = 0
+				natural_glimmers = .2
+				buddies[0] = get_light_map(x0 + xrel - 1, y0 + yrel - 1 + natural_glimmers)
 				buddies[1] = get_light_map(x0 + xrel - 1, y0 + yrel)
-				buddies[2] = get_light_map(x0 + xrel - 1, y0 + yrel + 1)
-				buddies[3] = get_light_map(x0 + xrel, y0 + yrel - 1)
-				buddies[4] = get_light_map(x0 + xrel, y0 + yrel + 1)
-				buddies[5] = get_light_map(x0 + xrel + 1, y0 + yrel - 1)
-				buddies[6] = get_light_map(x0 + xrel + 1, y0 + yrel)
-				buddies[7] = get_light_map(x0 + xrel + 1, y0 + yrel +1)
+				buddies[2] = get_light_map(x0 + xrel - 1, y0 + yrel + 1 + natural_glimmers)
+				natural_glimmers = .1
+				buddies[3] = get_light_map(x0 + xrel, y0 + yrel - 1 + natural_glimmers)
+				buddies[4] = get_light_map(x0 + xrel, y0 + yrel + 1 + natural_glimmers)
+				buddies[5] = get_light_map(x0 + xrel + 1, y0 + yrel - 1 + natural_glimmers)
+				natural_glimmers = .5
+				buddies[6] = get_light_map(x0 + xrel + 1, y0 + yrel + natural_glimmers)
+				buddies[7] = get_light_map(x0 + xrel + 1, y0 + yrel +1 + natural_glimmers)
 				
 				var average
 				
 				average = buddies.min()
 				if "light" in buddies:
-					average = 0
+					average = -3
 				average = average
 				var buddies_has_transparent = false
 				if (get_map(x0 + xrel - 1, y0 + yrel) in transparent_blocks) or (get_map(x0 + xrel + 1, y0 + yrel) in transparent_blocks) or (get_map(x0 + xrel - 1, y0 + yrel - 1) in transparent_blocks) or (get_map(x0 + xrel, y0 + yrel + 1) in transparent_blocks):
