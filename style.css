@@ -1,0 +1,20 @@
+.bg-primary {
+    background-color: #25ef6a;
+}
+.navbar.navbar-dark.bg-primary {
+    background-color: #25ef6a;
+}
+
+.bg-secondary {
+    background-color: #87af9f;
+}
+
+.main-img-heading {
+    background: url("Lareata (DEBUG) 1_6_2022 6_43_16 AM.png") contain;
+    background-repeat: no-repeat;
+}
+
+nav,h1 {
+    border-radius: 5px;
+    background-color: #25ef6a;
+}
