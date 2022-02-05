@@ -1,4 +1,4 @@
-# Basic Lareata Player
+# Basic Map Generator
 ## Extends and Name
 extends Node class_name BasicMapGenerator
 
