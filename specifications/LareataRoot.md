@@ -30,4 +30,4 @@ Sets _world_map_ to _map_. Should check if _len(map) == map_width * map_height_.
 ### get_controls ()
 Should get keyboard input and send it to root_player (e.g. _root_player.move(int up_vel, int down_vel, bool jump)_). Should ensure that the player is on the ground before sending the jump data.
 ### __physics_process (float delta)
-Should run _get_controls()_.
+Should run _get_controls()_, _root_player.reset_variables()_, and _root_player.regenerate_life().
