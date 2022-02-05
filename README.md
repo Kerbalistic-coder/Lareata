@@ -1,24 +1,7 @@
 # Lareata
 A 2D Terraria-like sandbox game.
 
-This game currently has:
- - Tilemap
- - Dummy scrolling player controller
- - Fractal noise-based map generation
+We completely restarted development, so we have nothing to show for it.
 
-## Installation Instructions
-This requires Godot to be installed.
-
- 1. Click "Download Zip" on Github.
- 2. Navigate in your file explorer to the Download folder of your browser, and uncompress Lareata-main.zip. If you got this package from a fork, it will say something other than "-main" at the end.
- 3. Move the folder "Lareata" from your just-unpacked .zip, and put it into your default Godot Projects folder.
- 4. Enter Godot, and click "scan" in the sidebar to the right.
- 5. Navigate to the Lareata folder you just moved, and select it.
- 6. Click "Select Current Folder", and Lareata should be present in your project list.
-
-## In This Version
-In this version (ALPHA 0.3.1), we added:
- - Nice map lighting
- - Background panel
-
-For more details see the changelog.
+## Spec
+The spec is the documentation for Lareata, pre-created as to allow development to match the doc. You will find it in the root/specifications folder.
