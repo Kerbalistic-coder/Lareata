@@ -1,6 +1,6 @@
 # Basic Lareata Player
 ## Extends and Name
-extends KinematicBody2D class_name base_player
+extends KinematicBody2D class_name BasePlayer
 
 ## Variables (All variables have public getters and setters unless otherwise specified)
 - int horizontal_speed
